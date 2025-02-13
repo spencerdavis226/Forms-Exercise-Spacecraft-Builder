@@ -42,7 +42,7 @@ const ItemForm = ({ onItemSubmit }) => {
     const newItem = {
       ...data,
       id: uuid(),
-      qty: Number(data.qty),
+      qty: Number(data.qty), // For validation. qty has to be a number. If no validation, omit this line
     };
     onItemSubmit(newItem);
     setData(INITIAL_STATE);

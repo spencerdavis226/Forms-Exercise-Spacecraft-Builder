@@ -10,11 +10,7 @@ const InventoryDisplay = ({ inventory, onDeleteItem }) => {
       {inventory.map((item) => (
         <div key={item.id}>
           <div>
-            <ItemCard
-              name={(item, name)}
-              qty={item.qty}
-              purpose={item.purpose}
-            />
+            <ItemCard name={item.name} qty={item.qty} purpose={item.purpose} />
           </div>
           <div>
             <ItemAction itemId={item.id} onDeleteItem={onDeleteItem} />

@@ -10,6 +10,7 @@ const ItemForm = ({ onItemSubmit }) => {
     agreeToTerms: false,
   };
   const [data, setData] = useState(INITIAL_STATE);
+  const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -20,15 +21,32 @@ const ItemForm = ({ onItemSubmit }) => {
     }));
   };
 
+  const validateForm = () => {
+    let newErrors = {};
+
+    if (!data.name.trim()) newErrors.name = 'Name is required';
+    if (!data.qty.trim() || isNaN(data.qty) || Number(data.qty) < 1)
+      newErrors.qty = 'Quantity must be a number greater than 0';
+    if (!data.purpose.trim()) newErrors.purpose = 'Purpose is required';
+    if (!data.agreeToTerms)
+      newErrors.agreeToTerms = 'You must agree to the terms';
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0; // Returns `true` if no errors
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!validateForm()) return;
 
     const newItem = {
       ...data,
       id: uuid(),
+      qty: Number(data.qty),
     };
     onItemSubmit(newItem);
     setData(INITIAL_STATE);
+    setErrors({});
   };
 
   return (
@@ -42,6 +60,7 @@ const ItemForm = ({ onItemSubmit }) => {
           value={data.name}
           onChange={handleChange}
         />
+        {errors.name && <div style={{ color: 'red' }}>{errors.name}</div>}
       </div>
       <div>
         <input
@@ -51,6 +70,7 @@ const ItemForm = ({ onItemSubmit }) => {
           value={data.qty}
           onChange={handleChange}
         />
+        {errors.qty && <div style={{ color: 'red' }}>{errors.qty}</div>}
       </div>
       <div>
         <input
@@ -60,8 +80,10 @@ const ItemForm = ({ onItemSubmit }) => {
           value={data.purpose}
           onChange={handleChange}
         />
+        {errors.purpose && <div style={{ color: 'red' }}>{errors.purpose}</div>}
       </div>
       <div>
+        <label htmlFor="agreeToTerms">I agree to the terms</label>
         <input
           type="checkbox"
           name="agreeToTerms"
@@ -69,6 +91,9 @@ const ItemForm = ({ onItemSubmit }) => {
           checked={data.agreeToTerms}
           onChange={handleChange}
         />
+        {errors.agreeToTerms && (
+          <div style={{ color: 'red' }}>{errors.agreeToTerms}</div>
+        )}
       </div>
       <button>Add</button>
     </form>
